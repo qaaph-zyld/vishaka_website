@@ -1,0 +1,180 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = []
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // Enable connection pooling
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  kundliCharts   KundliChart[]
+  savedReports  SavedReport[]
+  courseProgress CourseProgress[]
+  
+  @@map("users")
+}
+
+model KundliChart {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String?
+  birthData     String   // JSON string of birth data
+  kundliData    String   // JSON string of calculated Kundli data
+  isPublic      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  savedReports  SavedReport[]
+
+  @@map("kundli_charts")
+}
+
+model SavedReport {
+  id            String   @id @default(cuid())
+  userId        String
+  kundliChartId String?
+  title         String
+  reportData    String   // JSON string of report data
+  reportType    String   // 'basic' | 'detailed' | 'comprehensive'
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kundliChart   KundliChart? @relation(fields: [kundliChartId], references: [id])
+
+  @@map("saved_reports")
+}
+
+model Course {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  category      String
+  level         String   // 'beginner' | 'intermediate' | 'advanced'
+  duration      String
+  lessonsCount  Int
+  instructor    String
+  price         String   // 'free' or numeric value as string
+  tags          String   // JSON string array
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  modules       Module[]
+  progress      CourseProgress[]
+
+  @@map("courses")
+}
+
+model Module {
+  id            String   @id @default(cuid())
+  courseId      String
+  title         String
+  description   String
+  duration      String
+  order         Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons       Lesson[]
+
+  @@map("modules")
+}
+
+model Lesson {
+  id            String   @id @default(cuid())
+  moduleId      String
+  title         String
+  description   String
+  content       String?  // HTML content
+  duration      String
+  type          String   // 'video' | 'text' | 'quiz'
+  videoUrl      String?
+  order         Int
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  module        Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress      LessonProgress[]
+
+  @@map("lessons")
+}
+
+model CourseProgress {
+  id            String   @id @default(cuid())
+  userId        String
+  courseId      String
+  completedLessons Int    @default(0)
+  totalLessons   Int
+  isCompleted   Boolean  @default(false)
+  startedAt     DateTime @default(now())
+  completedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("course_progress")
+}
+
+model LessonProgress {
+  id            String   @id @default(cuid())
+  userId        String
+  lessonId      String
+  isCompleted   Boolean  @default(false)
+  completedAt   DateTime?
+  watchTime     Int      @default(0) // in seconds
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  lesson        Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+}
+
+model BlogPost {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  excerpt       String
+  content       String
+  category      String
+  readTime      String
+  author        String
+  publishedAt   DateTime?
+  isPublished   Boolean  @default(false)
+  tags          String   // JSON string array
+  featured      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("blog_posts")
+}

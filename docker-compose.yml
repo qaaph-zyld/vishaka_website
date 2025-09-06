@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: vishaka-db
+    environment:
+      POSTGRES_USER: vishaka
+      POSTGRES_PASSWORD: your-secure-password
+      POSTGRES_DB: vishaka
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vishaka"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  matomo:
+    image: matomo:apache
+    container_name: vishaka-matomo
+    environment:
+      - MATOMO_DATABASE_HOST=db
+      - MATOMO_DATABASE_USER=matomo
+      - MATOMO_DATABASE_PASSWORD=your-secure-password
+      - MATOMO_DATABASE_DBNAME=matomo
+    volumes:
+      - matomo_data:/var/www/html
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+
+  db:
+    image: mariadb:10.6
+    container_name: vishaka-matomo-db
+    command: --max-allowed-packet=64MB
+    environment:
+      - MYSQL_ROOT_PASSWORD=your-secure-root-password
+      - MYSQL_DATABASE=matomo
+      - MYSQL_USER=matomo
+      - MYSQL_PASSWORD=your-secure-password
+    volumes:
+      - matomo_db:/var/lib/mysql
+
+volumes:
+  postgres_data:
+  matomo_data:
+  matomo_db:
