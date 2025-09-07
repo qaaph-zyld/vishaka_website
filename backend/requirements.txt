@@ -1,0 +1,47 @@
+# Core
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dotenv==1.0.0
+pydantic[email]==2.5.2
+pydantic-settings==2.1.0
+
+# Database
+sqlalchemy==2.0.23
+alembic==1.12.1
+psycopg2-binary==2.9.6  # Version with pre-built wheels for Windows
+asyncpg==0.28.0
+
+# Redis
+redis==5.0.1
+hiredis==2.2.3
+
+# Email
+email-validator==2.1.0.post1
+
+# Utils
+python-dateutil==2.8.2
+pytz==2023.3.post1
+
+# Vedic Astrology
+swisseph==2.10.3.1
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+httpx==0.25.1
+
+# Development
+black==23.11.0
+isort==5.12.0
+mypy==1.7.0
+flake8==6.1.0
+
+# Monitoring
+prometheus-client==0.18.0
+opentelemetry-api==1.20.0
+opentelemetry-sdk==1.20.0
+opentelemetry-instrumentation-fastapi==0.41b0
+opentelemetry-exporter-prometheus==0.41b0

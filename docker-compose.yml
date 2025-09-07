@@ -1,8 +1,9 @@
 version: '3.8'
 
 services:
+  # Database
   postgres:
-    image: postgres:15-alpine
+    image: postgis/postgis:15-3.3-alpine
     container_name: vishaka-db
     environment:
       POSTGRES_USER: vishaka
@@ -17,35 +18,96 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
 
-  matomo:
-    image: matomo:apache
-    container_name: vishaka-matomo
-    environment:
-      - MATOMO_DATABASE_HOST=db
-      - MATOMO_DATABASE_USER=matomo
-      - MATOMO_DATABASE_PASSWORD=your-secure-password
-      - MATOMO_DATABASE_DBNAME=matomo
-    volumes:
-      - matomo_data:/var/www/html
-    depends_on:
-      - db
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: vishaka-redis
     ports:
-      - "8080:80"
-
-  db:
-    image: mariadb:10.6
-    container_name: vishaka-matomo-db
-    command: --max-allowed-packet=64MB
-    environment:
-      - MYSQL_ROOT_PASSWORD=your-secure-root-password
-      - MYSQL_DATABASE=matomo
-      - MYSQL_USER=matomo
-      - MYSQL_PASSWORD=your-secure-password
+      - "6379:6379"
     volumes:
-      - matomo_db:/var/lib/mysql
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+
+  # Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: vishaka-prometheus
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    depends_on:
+      - postgres
+      - redis
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: vishaka-grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  # Application Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: vishaka-backend
+    environment:
+      - DATABASE_URL=postgresql://vishaka:your-secure-password@postgres:5432/vishaka
+      - REDIS_URL=redis://redis:6379/0
+      - NODE_ENV=production
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Application Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: vishaka-frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
-  matomo_data:
-  matomo_db:
+  redis_data:
+  prometheus_data:
+  grafana_data:

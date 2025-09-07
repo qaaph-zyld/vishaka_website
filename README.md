@@ -1,72 +1,96 @@
-# 🚀 Vishaka Website
+# 🪐 Vishaka Vedic Astrology Platform
 
-A modern, privacy-focused website built with Next.js, TypeScript, and Tailwind CSS, designed for high performance and data ownership.
+A comprehensive Vedic Astrology platform built with a modern, scalable architecture. This project provides accurate astrological calculations, personalized birth chart generation, and astrological predictions using traditional Vedic principles.
 
-## ✨ Technology Stack
+## 🏗️ Architecture Overview
 
-This project is built with a modern, privacy-focused stack:
+The platform follows a microservices architecture with clear separation of concerns:
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   API Gateway   │    │   Monitoring    │
+│   (Next.js)     │    │   (FastAPI)     │    │   (Prometheus/  │
+└────────┬────────┘    └────────┬────────┘    │    Grafana)     │
+         │                      │             └────────┬────────┘
+         │                      │                      │
+         ▼                      ▼                      ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Web Client    │    │   Calculation   │    │   Logging &     │
+│   (Browser)     │    │   Services      │    │   Analytics     │
+└─────────────────┘    └────────┬────────┘    └─────────────────┘
+                                      │
+                                      ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   PostgreSQL    │    │   Redis Cache   │    │   File Storage  │
+│   (PostGIS)     │    │   (Session/     │    │   (MinIO)       │
+└─────────────────┘    │    Cache)       │    └─────────────────┘
+                       └─────────────────┘
+```
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+## 🚀 Technology Stack
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+### 🌐 Frontend
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe JavaScript
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - Accessible UI components
+- **TanStack Query** - Data fetching and caching
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
+### 🔧 Backend
+- **FastAPI** - High-performance API framework
+- **PostgreSQL** - Primary database with PostGIS
+- **Redis** - Caching and session management
+- **SQLAlchemy** - ORM for database operations
+- **Alembic** - Database migrations
 
-### 🗄️ Database & Backend
-- **🗄️ PostgreSQL** - Powerful, open-source relational database
-- **🔐 NextAuth.js** - Complete open-source authentication solution
-- **📊 Matomo** - Privacy-focused, self-hosted analytics platform
+### 📊 Monitoring & Observability
+- **Prometheus** - Metrics collection
+- **Grafana** - Visualization and dashboards
+- **Loki** - Log aggregation
+- **Tempo** - Distributed tracing
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+### 🛠️ DevOps
+- **Docker** - Containerization
+- **Docker Compose** - Local development
+- **GitHub Actions** - CI/CD pipeline
+- **Terraform** - Infrastructure as Code
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+### 🔐 Security
+- **JWT Authentication** - Stateless auth
+- **OAuth 2.0** - Social login
+- **Rate Limiting** - API protection
+- **CORS** - Cross-origin security
 
-## 🎯 Why This Project?
+### 📡 Integration
+- **Swiss Ephemeris** - Astronomical calculations
+- **VedAstro** - Vedic astrology engine
+- **Matomo** - Privacy-focused analytics
 
-- **🔒 Privacy First** - Self-hosted analytics and no third-party trackers
-- **⚡ High Performance** - Optimized for production with Docker
-- **🔒 Data Ownership** - Full control over user data and analytics
-- **📱 Responsive** - Mobile-first design with smooth animations
-- **🗄️ Database Ready** - PostgreSQL with Prisma ORM for type-safe database operations
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment
+## 🎯 Key Features
+
+- **🔭 Accurate Calculations** - Swiss Ephemeris for precise planetary positions
+- **📊 Interactive Charts** - Beautifully rendered birth charts and dashas
+- **🔮 Predictive Analytics** - Major life events and transit predictions
+- **📱 Responsive Design** - Works on all devices
+- **🔐 Privacy Focused** - Self-hosted, no third-party trackers
+- **🌍 Multi-language** - Internationalization support
+- **📈 Analytics** - Built-in privacy-focused analytics
 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Docker and Docker Compose
-- Node.js 18+
-- PostgreSQL 15+
+- Node.js 20+
+- Python 3.10+ (for backend services)
+- PostgreSQL 15+ with PostGIS extension
 
 ### Local Development
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/vishaka-website.git
-   cd vishaka-website
+   git clone https://github.com/yourusername/vishaka-astrology.git
+   cd vishaka-astrology
    ```
 
 2. **Set up environment variables**
@@ -77,89 +101,117 @@ This project is built with a modern, privacy-focused stack:
 
 3. **Start services**
    ```bash
-   chmod +x deploy.sh
-   ./deploy.sh
+   docker-compose up -d
    ```
 
-4. **Access the application**
-   - Website: http://localhost:3000
-   - Matomo Analytics: http://localhost:8080
+4. **Initialize the database**
+   ```bash
+   docker-compose exec backend alembic upgrade head
+   ```
+
+5. **Access the application**
+   - Frontend: http://localhost:3000
+   - API Docs: http://localhost:8000/docs
+   - Grafana: http://localhost:3000 (admin/admin)
+   - Prometheus: http://localhost:9090
+
+## 🏗️ Project Structure
+
+```
+.
+├── backend/              # FastAPI backend
+│   ├── app/            # Application code
+│   │   ├── api/        # API endpoints
+│   │   ├── core/       # Core functionality
+│   │   ├── models/     # Database models
+│   │   └── services/   # Business logic
+│   └── alembic/        # Database migrations
+│
+├── frontend/            # Next.js frontend
+│   ├── app/            # App Router pages
+│   ├── components/     # Reusable components
+│   ├── lib/            # Utility functions
+│   └── styles/         # Global styles
+│
+├── monitoring/          # Monitoring configuration
+│   ├── grafana/        # Grafana dashboards
+│   └── prometheus/     # Prometheus config
+│
+├── docker/             # Docker configuration
+├── scripts/            # Utility scripts
+└── tests/              # Test suites
+```
+
+## 🛠️ Development
+
+### Backend Development
+
+1. **Set up Python virtual environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   pip install -r backend/requirements-dev.txt
+   ```
+
+2. **Run database migrations**
+   ```bash
+   cd backend
+   alembic upgrade head
+   ```
+
+3. **Start the development server**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+### Frontend Development
+
+1. **Install dependencies**
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+## 🚀 Deployment
 
 ### Production Deployment
 
-1. Set up a production PostgreSQL database
-2. Configure production environment variables
-3. Build and start the application:
+1. **Set up production environment variables**
+   ```bash
+   cp .env.example .env.prod
+   # Update with production values
+   ```
+
+2. **Build and start in production mode**
    ```bash
    docker-compose -f docker-compose.prod.yml up -d --build
    ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+3. **Run database migrations**
+   ```bash
+   docker-compose -f docker-compose.prod.yml exec backend alembic upgrade head
+   ```
 
-## 🤖 Powered by Z.ai
+## 📚 Documentation
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+- [API Documentation](http://localhost:8000/docs) (available when backend is running)
+- [Architecture Decision Records](./docs/adr/)
+- [Database Schema](./docs/database-schema.md)
+- [API Reference](./docs/api-reference.md)
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+## 🤝 Contributing
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+Contributions are welcome! Please read our [Contributing Guide](./CONTRIBUTING.md) for details on how to submit pull requests.
 
-## 📁 Project Structure
+## 📄 License
 
-```
-src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
-```
-
-## 🎨 Available Features & Components
-
-This scaffold includes a comprehensive set of modern web development tools:
-
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
-
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
-
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
-
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
-
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
-
-## 🤝 Get Started with Z.ai
-
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+Built with ❤️ for the Vedic Astrology community. May the stars guide you! 🌟
